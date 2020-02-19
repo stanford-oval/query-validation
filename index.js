@@ -108,7 +108,7 @@ function validatePOST(keys, options) {
 
     return function(req, res, next) {
         if (options.accept && !typeIs(req, options.accept)) {
-            next(failContentType(req, res, options));
+            next(failContentType());
             return;
         }
 
@@ -123,6 +123,4 @@ module.exports = {
     validatePOST,
 
     checkKey,
-    failKey,
-    failContentType
 };
