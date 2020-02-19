@@ -1,0 +1,30 @@
+{
+  "name": "query-validation",
+  "version": "0.1.0",
+  "description": "Server-side validation of query and body parameters for Express",
+  "main": "index.js",
+  "repository": "https://github.com/stanford-oval/query-validation",
+  "author": "Giovanni Campagna <gcampagn@cs.stanford.edu>",
+  "license": "BSD-3-Clause",
+  "devDependencies": {
+    "coveralls": "^3.0.0",
+    "eslint": "^6.0.0",
+    "nyc": "^15.0.0",
+    "pegjs": "^0.10.0"
+  },
+  "scripts": {
+    "lint": "eslint ./index.js",
+    "test": "nyc node ./test",
+    "coverage": "nyc report --reporter=text-lcov | coveralls"
+  },
+  "dependencies": {
+    "type-is": "^1.6.18"
+  },
+  "nyc": {
+    "exclude": [
+      "test/**",
+      "test.js",
+      "coverage/**"
+    ]
+  }
+}
