@@ -7,12 +7,11 @@
 // Author: Giovanni Campagna <gcampagn@cs.stanford.edu>
 //
 // See COPYING for details
-"use strict";
 
-const qs = require('qs');
-const assert = require('assert');
+import * as qs from 'qs';
+import assert from 'assert';
 
-const iv = require('../index');
+import * as iv from '../lib';
 
 const TEST_CASES = [
     ['foo=bar', { foo: 'string' }, true],
@@ -130,10 +129,9 @@ function test(i) {
     iv.validateGET(validation, options)(req, res, next);
 }
 
-function main() {
+export default function main() {
     for (let i = 0; i < TEST_CASES.length; i++)
         test(i);
 }
-module.exports = main;
 if (!module.parent)
     main();

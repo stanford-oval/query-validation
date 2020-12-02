@@ -1,7 +1,12 @@
+branches:
+  except:
+  - "/^wip/"
+  - "/^dependabot/"
 language: node_js
 node_js:
 - '10'
+- '12'
 script:
-- yarn lint
-- TZ="America/Los_Angeles" yarn test
-after_success: yarn run coverage
+- npm run lint
+- TZ="America/Los_Angeles" npm run test
+after_success: npm run coverage
