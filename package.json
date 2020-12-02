@@ -2,22 +2,33 @@
   "name": "query-validation",
   "version": "0.1.0",
   "description": "Server-side validation of query and body parameters for Express",
-  "main": "index.js",
   "repository": "https://github.com/stanford-oval/query-validation",
   "author": "Giovanni Campagna <gcampagn@cs.stanford.edu>",
   "license": "BSD-3-Clause",
+  "main": "dist/lib/index.js",
+  "types": "dist/lib/index.d.ts",
   "devDependencies": {
+    "typescript": "^4.1.2",
+    "@istanbuljs/nyc-config-typescript": "^1.0.1",
+    "@typescript-eslint/eslint-plugin": "^4.9.0",
+    "@typescript-eslint/parser": "^4.9.0",
     "coveralls": "^3.0.0",
-    "eslint": "^7.6.0",
+    "eslint": "^7.14.0",
     "nyc": "^15.0.0",
-    "pegjs": "^0.10.0"
+    "pegjs": "^0.10.0",
+    "source-map-support": "^0.5.19",
+    "ts-node": "^9.0.0",
+    "typedoc": "^0.19.2"
   },
   "scripts": {
-    "lint": "eslint ./index.js",
-    "test": "nyc node ./test",
-    "coverage": "nyc report --reporter=text-lcov | coveralls"
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx ./lib",
+    "test": "nyc ts-node ./test",
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "prepare": "tsc --build tsconfig.json"
   },
   "dependencies": {
+    "@types/express": "^4.17.9",
+    "@types/type-is": "^1.6.3",
     "type-is": "^1.6.18"
   },
   "nyc": {

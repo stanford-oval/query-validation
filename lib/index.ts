@@ -1,4 +1,4 @@
-// -*- mode: js; indent-tabs-mode: nil; js-basic-offset: 4 -*-
+// -*- mode: typescript; indent-tabs-mode: nil; js-basic-offset: 4 -*-
 //
 // This file is part of Thingpedia
 //
@@ -7,12 +7,16 @@
 // Author: Giovanni Campagna <gcampagn@cs.stanford.edu>
 //
 // See COPYING for details
-"use strict";
 
-const typeIs = require('type-is');
+import typeIs from 'type-is';
+import type * as express from 'express';
 
-class ValidationError extends Error {
-    constructor(status, code, key, message) {
+export class ValidationError extends Error {
+    status : number;
+    code : string;
+    key : string|null;
+
+    constructor(status : number, code : string, key : string|null, message : string) {
         super(message);
         this.status = status;
         this.code = code;
@@ -20,9 +24,11 @@ class ValidationError extends Error {
     }
 }
 
-function checkKey(value, type) {
+export type TypeSpec = string[]|string|RegExp;
+
+export function checkKey(value : unknown, type : TypeSpec) : boolean {
     if (Array.isArray(type)) {
-        for (let option of type) {
+        for (const option of type) {
             if (checkKey(value, option))
                 return true;
         }
@@ -79,16 +85,25 @@ function checkKey(value, type) {
     }
 }
 
-function failKey(key) {
+function failKey(key : string) : Error {
     return new ValidationError(400 /* Bad Request */, 'E_BAD_PARAM', key, `invalid content-type`);
 }
 
-function failContentType() {
+function failContentType() : Error {
     return new ValidationError(415 /* Not Acceptable */, 'E_BAD_CONTENT_TYPE', null, `invalid content-type`);
 }
 
-function _validate(req, res, next, body, keys, options) {
-    for (let key in keys) {
+interface ValidateOptions {
+    accept ?: string;
+}
+
+function _validate(req : express.Request,
+                   res : express.Response,
+                   next : (err ?: Error) => void,
+                   body : Record<string, unknown>,
+                   keys : Record<string, TypeSpec>,
+                   options : ValidateOptions) {
+    for (const key in keys) {
         if (!checkKey(body[key], keys[key])) {
             next(failKey(key));
             return;
@@ -97,16 +112,13 @@ function _validate(req, res, next, body, keys, options) {
     next();
 }
 
-function validateGET(keys, options) {
-    options = options || {};
-    return function(req, res, next) {
+export function validateGET(keys : Record<string, TypeSpec>, options : ValidateOptions = {}) : express.RequestHandler {
+    return function(req : express.Request, res : express.Response, next : (err ?: Error) => void) {
         _validate(req, res, next, req.query, keys, options);
     };
 }
-function validatePOST(keys, options) {
-    options = options || {};
-
-    return function(req, res, next) {
+export function validatePOST(keys : Record<string, TypeSpec>, options : ValidateOptions = {}) : express.RequestHandler {
+    return function(req : express.Request, res : express.Response, next : (err ?: Error) => void) {
         if (options.accept && !typeIs(req, options.accept)) {
             next(failContentType());
             return;
@@ -115,12 +127,3 @@ function validatePOST(keys, options) {
         _validate(req, res, next, req.body, keys, options);
     };
 }
-
-module.exports = {
-    ValidationError,
-
-    validateGET,
-    validatePOST,
-
-    checkKey,
-};
