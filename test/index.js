@@ -118,6 +118,7 @@ function test(i) {
         if (err) {
             if (expected)
                 assert.fail(`unexpected error for ${input}`);
+            assert(err.message.startsWith('missing or invalid parameter'));
             assert.strictEqual(err.code, 'E_BAD_PARAM');
             assert.strictEqual(err.status, 400);
         } else {

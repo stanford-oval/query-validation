@@ -86,7 +86,7 @@ export function checkKey(value : unknown, type : TypeSpec) : boolean {
 }
 
 function failKey(key : string) : Error {
-    return new ValidationError(400 /* Bad Request */, 'E_BAD_PARAM', key, `invalid content-type`);
+    return new ValidationError(400 /* Bad Request */, 'E_BAD_PARAM', key, `missing or invalid parameter ${key}`);
 }
 
 function failContentType() : Error {
